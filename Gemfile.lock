@@ -41,6 +41,7 @@ GEM
     arel (7.1.4)
     builder (3.2.3)
     byebug (9.1.0)
+    coderay (1.1.2)
     concurrent-ruby (1.0.5)
     crass (1.0.2)
     erubis (2.7.0)
@@ -67,6 +68,11 @@ GEM
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     pg (0.21.0)
+    pry (0.11.1)
+      coderay (~> 1.1.0)
+      method_source (~> 0.9.0)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     puma (3.10.0)
     rack (2.0.3)
     rack-test (0.6.3)
@@ -125,8 +131,10 @@ DEPENDENCIES
   byebug
   listen (~> 3.0.5)
   pg (~> 0.18)
+  pry-rails
   puma (~> 3.0)
   rails (~> 5.0.4)
+  rb-fsevent
   spring
   spring-watcher-listen (~> 2.0.0)
 
