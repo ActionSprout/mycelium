@@ -23,7 +23,10 @@ default: &default
 
 development:
   <<: *default
-  database: mycelium_development
+  database: fern_development
+  host: fern_db
+  username: rails
+  password: noodlejam
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.

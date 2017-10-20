@@ -42,7 +42,6 @@ services:
       - fern_postgres_1:fern_db
     command: "bundle exec puma"
     environment:
-      DATABASE_URL: postgres://fern_db/fern_development
       PORT: 80
       # AS_FERN_PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgrrSkXCwgDcDbmWYS6ctvQRYnvHT\nLV3q/LgIzpH++aWBLK0qqioUenRK0dxD5bCRnFjHTMH6eU4NtIFG6xqkKw==\n-----END PUBLIC KEY-----\n"
       REDIS_URL: 'redis://redis:6379/1'
