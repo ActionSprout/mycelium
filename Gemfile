@@ -9,6 +9,10 @@ gem 'puma', '~> 3.0'
 
 
 group :development, :test do
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'rspec-rails'
+  gem 'spring-commands-rspec'
   gem 'pry-rails'
   gem 'rb-fsevent', require: false
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
