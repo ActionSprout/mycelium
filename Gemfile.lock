@@ -129,7 +129,9 @@ DEPENDENCIES
   rails (~> 5.0.4)
   spring
   spring-watcher-listen (~> 2.0.0)
-  tzinfo-data
+
+RUBY VERSION
+   ruby 2.3.3p222
 
 BUNDLED WITH
    1.15.3
