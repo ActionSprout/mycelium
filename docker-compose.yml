@@ -1,0 +1,76 @@
+version: '3'
+services:
+#  redis:
+#    image: redis
+#    volumes:
+#      - ~/container-volumes/starflower/redis:/data
+
+  neo4j:
+    build:
+      context: ./
+      dockerfile: neo4j-dockerfile
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ~/container-volumes/mycelium/neo4j/data:/data
+      - ~/container-volumes/mycelium/neo4j/logs:/logs
+      - ~/container-volumes/mycelium/neo4j/import:/import
+    environment:
+      NEO4J_AUTH: none
+      # NEO4J_dbms_allowFormatMigration: "true"
+      NEO4J_dbms_memory_pagecache_size: "1G"
+      NEO4J_dbms_memory_heap_maxSize: "2G"
+      NEO4J_dbms_security_procedures_unrestricted: "apoc.*"
+      NEO4J_apoc_export_file_enabled: "true"
+
+  web:
+    build:
+      context: ./
+      # args:
+    depends_on:
+      #- redis
+      - neo4j
+    ports:
+      - "3018:80"
+    volumes:
+      - ./:/app_root/
+    networks:
+      - default
+      - fern_default
+    external_links:
+      - fern_postgres_1:fern_db
+    command: "bundle exec puma"
+    environment:
+      DATABASE_URL: postgres://fern_db/fern_development
+      PORT: 80
+      # AS_FERN_PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgrrSkXCwgDcDbmWYS6ctvQRYnvHT\nLV3q/LgIzpH++aWBLK0qqioUenRK0dxD5bCRnFjHTMH6eU4NtIFG6xqkKw==\n-----END PUBLIC KEY-----\n"
+      REDIS_URL: 'redis://redis:6379/1'
+      REDIS_PROVIDER: 'REDIS_URL'
+      # Uncomment These to enable basic Auth for Sidekiq UI
+      # SIDEKIQ_USERNAME: noodle
+      # SIDEKIQ_PASSWORD: jam
+      FACEBOOK_APP_ACCESS_TOKEN: "858629754173753|Ogi9sZyeli_at1llKdmg0Yudefk"
+
+#  worker:
+#    build:
+#      context: ./
+#      # args:
+#    depends_on:
+#      - redis
+#      - neo4j
+#    volumes:
+#      - ./:/app_root/
+#    command: "bundle exec sidekiq"
+#    environment:
+#      AS_FERN_PUBLIC_KEY: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEgrrSkXCwgDcDbmWYS6ctvQRYnvHT\nLV3q/LgIzpH++aWBLK0qqioUenRK0dxD5bCRnFjHTMH6eU4NtIFG6xqkKw==\n-----END PUBLIC KEY-----\n"
+#      REDIS_URL: 'redis://redis:6379/1'
+#      REDIS_PROVIDER: 'REDIS_URL'
+#      SIDEKIQ_VERBOSE: 'true'
+#      SIDEKIQ_CONCURRENCY: 15
+#      FACEBOOK_APP_ACCESS_TOKEN: "858629754173753|Ogi9sZyeli_at1llKdmg0Yudefk"
+
+networks:
+  fern_default:
+    external: true
+
