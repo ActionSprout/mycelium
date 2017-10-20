@@ -16,6 +16,11 @@ services:
       - ~/container-volumes/mycelium/neo4j/data:/data
       - ~/container-volumes/mycelium/neo4j/logs:/logs
       - ~/container-volumes/mycelium/neo4j/import:/import
+    networks:
+      - default
+      - fern_default
+    external_links:
+      - fern_postgres_1:fern_db
     environment:
       NEO4J_AUTH: none
       # NEO4J_dbms_allowFormatMigration: "true"
