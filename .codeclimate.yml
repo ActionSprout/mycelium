@@ -1,0 +1,31 @@
+---
+engines:
+  brakeman:
+    enabled: true
+  bundler-audit:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        ruby:
+          mass_threshold: 25
+  fixme:
+    enabled: true
+    exclude_paths:
+      - .codeclimate.yml
+    config:
+      strings:
+      - FIXME
+  rubocop:
+    enabled: true
+ratings:
+  paths:
+  - Gemfile.lock
+  - "**.rb"
+exclude_paths:
+- config/
+- db/
+- script/
+- spec/
+- vendor/

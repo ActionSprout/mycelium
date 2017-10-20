@@ -9,6 +9,7 @@ gem 'puma', '~> 3.0'
 
 
 group :development, :test do
+  gem 'dotenv-rails'
   gem 'guard'
   gem 'guard-rspec'
   gem 'rspec-rails'
