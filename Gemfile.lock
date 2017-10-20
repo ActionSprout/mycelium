@@ -52,6 +52,7 @@ GEM
       minitest (~> 5.1)
       tzinfo (~> 1.1)
     arel (7.1.4)
+    bugsnag (5.3.3)
     builder (3.2.3)
     byebug (9.1.0)
     coderay (1.1.2)
@@ -210,6 +211,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  bugsnag
   byebug
   dotenv-rails
   foreman

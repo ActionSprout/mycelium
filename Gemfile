@@ -6,6 +6,7 @@ gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.0'
 
 # Tools
+gem 'bugsnag'
 gem 'sidekiq', '~> 4'
 gem 'sidekiq-pro', source: "https://2aa2eab4:95d80c19@enterprise.contribsys.com/"
 gem 'sidekiq-ent', source: "https://2aa2eab4:95d80c19@enterprise.contribsys.com/"
