@@ -1,0 +1,6 @@
+---
+:concurrency: <%= ENV['SIDEKIQ_CONCURRENCY'] %>
+:timeout: 8
+:queues:
+  - priority
+  - default

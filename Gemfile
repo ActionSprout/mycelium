@@ -6,6 +6,14 @@ gem 'pg', '~> 0.18'
 gem 'puma', '~> 3.0'
 
 # Tools
+gem 'sidekiq', '~> 4'
+gem 'sidekiq-pro', source: "https://2aa2eab4:95d80c19@enterprise.contribsys.com/"
+gem 'sidekiq-ent', source: "https://2aa2eab4:95d80c19@enterprise.contribsys.com/"
+
+# We need sinatra for Sidekiq's UI.
+# We are using Github (master) version because we're on Rails 5.
+# REF => https://github.com/mperham/sidekiq/issues/2839#issuecomment-191723849
+gem 'sinatra', github: 'sinatra', :require => nil
 
 
 group :development, :test do
