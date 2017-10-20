@@ -1,23 +1,15 @@
 version: '3'
 services:
 
-  importer:
-    build:
-      context: ./
-    depends_on:
-      - neo4j
-    volumes:
-      - ./:/app_root/
-    command: "bundle exec rake import"
-
   neo4j:
     build:
       context: ./
-      dockerfile: neo4j-dockerfile
+      dockerfile: Dockerfile
     ports:
       - "7474:7474"
       - "7687:7687"
     volumes:
+      - ./:/app_root/
       - ~/container-volumes/mycelium/neo4j/data:/data
       - ~/container-volumes/mycelium/neo4j/logs:/logs
       - ~/container-volumes/mycelium/neo4j/import:/import

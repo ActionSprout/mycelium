@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
-ruby '2.3.3'
 
 gem 'neo4j'
+gem 'neo4j-community'
 gem 'rake'
 gem 'pry'
