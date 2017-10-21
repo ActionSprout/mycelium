@@ -18,7 +18,7 @@ def setup_neo4j_session
 end
 
 def import_organizations(session)
-  puts "Importing organizations"
+  log "Importing organizations"
 
   batch_import_sql_to_cypher(session, "SELECT id,name,fb_page_id FROM organizations WHERE enabled='t' AND", <<~CYPHER)
     MERGE (org:Organization { fern_id: row.id }) ON CREATE SET org.name = row.name
@@ -28,7 +28,7 @@ def import_organizations(session)
 end
 
 def import_posts(session)
-  puts "Importing posts"
+  log "Importing posts"
 
   batch_import_sql_to_cypher(session, "SELECT id,facebook_post_id,organization_id FROM posts WHERE", <<~CYPHER)
     MATCH (org:Organization { fern_id: row.organization_id })-[:manages]->(page:Page)
@@ -38,7 +38,7 @@ def import_posts(session)
 end
 
 def import_people(session)
-  puts "Importing people"
+  log "Importing people"
 
   batch_import_sql_to_cypher(session, "SELECT id,third_party_id,name,email,facebook_user_id FROM people WHERE", <<~CYPHER)
     MERGE (person:Person { fern_id: row.id })
@@ -64,7 +64,7 @@ def batch_import_sql_to_cypher(session, sql, cypher)
     loaded_count = result.loaded_count
     last_id = result.last_id
 
-    puts "Loaded #{loaded_count.inspect} ending at #{last_id.inspect}"
+    log "Loaded #{loaded_count.inspect} ending at #{last_id.inspect}"
   end
 end
 
@@ -81,3 +81,7 @@ def cypher_for_import(sql, cypher, params = [])
   CYPHER
 end
 
+
+def log(message)
+  puts "importer #{Time.now} -- #{message}"
+end
