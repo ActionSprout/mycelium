@@ -1,4 +1,5 @@
 require 'json'
+require 'logger'
 
 desc "Import data in to neo4j from fern postgres"
 task :import do
@@ -81,7 +82,7 @@ def cypher_for_import(sql, cypher, params = [])
   CYPHER
 end
 
-
 def log(message)
-  puts "importer #{Time.now} -- #{message}"
+  $logger ||= Logger.new(STDOUT)
+  $logger.debug message
 end
