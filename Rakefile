@@ -4,7 +4,7 @@ desc "Import data in to neo4j from fern postgres"
 task :import do
   session = setup_neo4j_session
 
-  #import_organizations session
+  import_organizations session
   import_posts session
 end
 
