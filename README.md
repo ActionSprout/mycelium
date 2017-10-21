@@ -21,3 +21,16 @@ docker-compose run --rm importer
 ```
 
 Sometimes, if the importer is already built, and the neo4j instance was _just_ started, it will fail to connect. Running the importer a second time usually works.
+
+neo4j-engagement-feasibility server
+---
+
+There is a digitalocean server running to run this study. Talk to @amiel if you want access.
+
+To use the neo4j browser with that data, use the following ssh command (assuming you have neo4j-engagement-feasibility set up as an ssh host).
+
+```
+ssh neo4j-engagement-feasibility -L 7688:localhost:7687 -L 7475:localhost:7474
+```
+
+Then point your browser at http://localhost:7475 and configure it to use bolt://localhost:7688
