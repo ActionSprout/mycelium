@@ -6,6 +6,7 @@ task :import do
 
   import_organizations session
   import_posts session
+  import_people session
 end
 
 def setup_neo4j_session
@@ -33,6 +34,18 @@ def import_posts(session)
     MATCH (org:Organization { fern_id: row.organization_id })-[:manages]->(page:Page)
     MERGE (post:Post { facebook_post_id: row.facebook_post_id })
     MERGE (page)-[:shared]->(post)
+  CYPHER
+end
+
+def import_people(session)
+  puts "Importing people"
+
+  batch_import_sql_to_cypher(session, "SELECT id,third_party_id,name,email,facebook_user_id FROM people WHERE", <<~CYPHER)
+    MERGE (person:Person { fern_id: row.id })
+      ON CREATE SET person.name = row.name,
+        person.facebook_user_id = row.facebook_user_id,
+        person.third_party_id = row.third_party_id,
+        person.email = row.email
   CYPHER
 end
 
