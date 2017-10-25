@@ -65,7 +65,6 @@ end
 # sql MUST begin a WHERE clause and call the main table: `t`
 # cypher MUST expect a trailing RETURN
 def batch_import_sql_to_cypher(session, table_name, node_name, sql, cypher)
-  log "Importing #{table_name}"
 
   if node_name
     last_imported_result = session.query("MATCH (n:#{node_name}) RETURN max(n.fern_id) AS id")
@@ -73,6 +72,8 @@ def batch_import_sql_to_cypher(session, table_name, node_name, sql, cypher)
   else
     last_id = 0
   end
+
+  log "Importing #{table_name} starting with id=#{last_id}"
 
   cypher = "#{cypher} RETURN COUNT(row) AS loaded_count, MAX(row.id) AS last_id"
   sql = "#{sql} t.id > ? ORDER BY t.id ASC LIMIT ?"
