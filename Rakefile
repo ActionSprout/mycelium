@@ -21,9 +21,7 @@ def setup_neo4j_session
 end
 
 def import_organizations(session)
-  log "Importing organizations"
-
-  batch_import_sql_to_cypher(session, "SELECT id,name,fb_page_id FROM organizations t WHERE enabled='t' AND", <<~CYPHER)
+  batch_import_sql_to_cypher(session, "organizations", "Organization", "SELECT id,name,fb_page_id FROM organizations t WHERE enabled='t' AND", <<~CYPHER)
     MERGE (org:Organization { fern_id: row.id }) ON CREATE SET org.name = row.name
     MERGE (page:Page { facebook_page_id: row.fb_page_id })
     MERGE (org)-[:manages]->(page)
@@ -31,9 +29,7 @@ def import_organizations(session)
 end
 
 def import_posts(session)
-  log "Importing posts"
-
-  batch_import_sql_to_cypher(session, "SELECT id,facebook_post_id,organization_id FROM posts t WHERE", <<~CYPHER)
+  batch_import_sql_to_cypher(session, "posts", "Post", "SELECT id,facebook_post_id,organization_id FROM posts t WHERE", <<~CYPHER)
     MATCH (org:Organization { fern_id: row.organization_id })-[:manages]->(page:Page)
     MERGE (post:Post { facebook_post_id: row.facebook_post_id })
     MERGE (page)-[:shared]->(post)
@@ -41,9 +37,7 @@ def import_posts(session)
 end
 
 def import_people(session)
-  log "Importing people"
-
-  batch_import_sql_to_cypher(session, "SELECT id,third_party_id,name,email,facebook_user_id FROM people t WHERE", <<~CYPHER)
+  batch_import_sql_to_cypher(session, "people", "Person", "SELECT id,third_party_id,name,email,facebook_user_id FROM people t WHERE", <<~CYPHER)
     MERGE (person:Person { fern_id: row.id })
       ON CREATE SET person.name = row.name,
         person.facebook_user_id = row.facebook_user_id,
@@ -53,8 +47,6 @@ def import_people(session)
 end
 
 def import_engagement(session, engagement)
-  log "Importing #{engagement}"
-
   selects = %w[
     t.id
     t.facebook_post_id
@@ -62,7 +54,7 @@ def import_engagement(session, engagement)
     a.person_id
   ].join(',')
 
-  batch_import_sql_to_cypher(session, "SELECT #{selects} FROM #{engagement} t INNER JOIN affiliations a ON a.id = t.affiliation_id WHERE", <<~CYPHER)
+  batch_import_sql_to_cypher(session, engagement, nil, "SELECT #{selects} FROM #{engagement} t INNER JOIN affiliations a ON a.id = t.affiliation_id WHERE", <<~CYPHER)
     MATCH (person:Person { fern_id: row.person_id })
     MATCH (post:Post { facebook_post_id: row.facebook_post_id })
     MERGE (person)-[e:#{engagement}]->(post)
@@ -72,8 +64,15 @@ end
 
 # sql MUST begin a WHERE clause and call the main table: `t`
 # cypher MUST expect a trailing RETURN
-def batch_import_sql_to_cypher(session, sql, cypher)
-  last_id = 0
+def batch_import_sql_to_cypher(session, table_name, node_name, sql, cypher)
+  log "Importing #{table_name}"
+
+  if node_name
+    last_imported_result = session.query("MATCH (n:#{node_name}) RETURN max(n.fern_id) AS id")
+    last_id = last_imported_result.first.id || 0
+  else
+    last_id = 0
+  end
 
   cypher = "#{cypher} RETURN COUNT(row) AS loaded_count, MAX(row.id) AS last_id"
   sql = "#{sql} t.id > ? ORDER BY t.id ASC LIMIT ?"
@@ -83,9 +82,9 @@ def batch_import_sql_to_cypher(session, sql, cypher)
 
     result = results.first
     loaded_count = result.loaded_count
-    last_id = result.last_id
+    log "Loaded #{loaded_count.inspect} #{table_name} ending at #{last_id.inspect}"
 
-    log "Loaded #{loaded_count.inspect} ending at #{last_id.inspect}"
+    last_id = result.last_id
   end
 end
 
