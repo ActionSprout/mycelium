@@ -32,6 +32,8 @@ def import_posts(session)
   batch_import_sql_to_cypher(session, "posts", "Post", "SELECT id,facebook_post_id,organization_id FROM posts t WHERE", <<~CYPHER)
     MATCH (org:Organization { fern_id: row.organization_id })-[:manages]->(page:Page)
     MERGE (post:Post { facebook_post_id: row.facebook_post_id })
+      ON CREATE SET post.fern_id = row.id
+      ON MATCH SET post.fern_id = row.id
     MERGE (page)-[:shared]->(post)
   CYPHER
 end
